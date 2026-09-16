@@ -132,6 +132,110 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+/* ===== WinAmp classic (Mac-metal skin) design system ===== */
+:root {
+  --wa-chrome-hi: oklch(0.97 0.004 250);
+  --wa-chrome: oklch(0.86 0.008 250);
+  --wa-chrome-mid: oklch(0.78 0.012 250);
+  --wa-chrome-lo: oklch(0.62 0.018 250);
+  --wa-chrome-edge: oklch(0.45 0.025 255);
+  --wa-titlebar: oklch(0.3 0.05 260);
+  --wa-lcd: oklch(0.31 0.075 262);
+  --wa-lcd-deep: oklch(0.22 0.07 264);
+  --wa-lcd-ink: oklch(0.88 0.06 240);
+  --wa-lcd-dim: oklch(0.55 0.05 245);
+  --wa-led: oklch(0.65 0.19 255);
+  --wa-bolt: oklch(0.78 0.18 70);
+  --wa-desk: oklch(0.9 0.006 250);
+
+  --wa-metal: linear-gradient(
+    180deg,
+    var(--wa-chrome-hi) 0%,
+    var(--wa-chrome) 38%,
+    var(--wa-chrome-mid) 55%,
+    var(--wa-chrome-hi) 100%
+  );
+  --wa-metal-v: linear-gradient(
+    90deg,
+    var(--wa-chrome-hi) 0%,
+    var(--wa-chrome) 45%,
+    var(--wa-chrome-mid) 60%,
+    var(--wa-chrome-hi) 100%
+  );
+  --wa-knob: radial-gradient(circle at 35% 25%, var(--wa-chrome-hi), var(--wa-chrome-mid) 70%, var(--wa-chrome-lo));
+  --wa-groove: linear-gradient(180deg, var(--wa-chrome-lo), var(--wa-chrome-hi));
+  --wa-bevel: inset 0 1px 0 oklch(1 0 0 / 0.9), inset 0 -1px 0 oklch(0.5 0.02 255 / 0.5),
+    0 1px 2px oklch(0.3 0.02 255 / 0.35);
+  --wa-inset: inset 0 1px 3px oklch(0.3 0.03 255 / 0.55), inset 0 -1px 0 oklch(1 0 0 / 0.7);
+}
+
+@theme inline {
+  --color-wa-chrome: var(--wa-chrome);
+  --color-wa-chrome-hi: var(--wa-chrome-hi);
+  --color-wa-chrome-lo: var(--wa-chrome-lo);
+  --color-wa-chrome-edge: var(--wa-chrome-edge);
+  --color-wa-titlebar: var(--wa-titlebar);
+  --color-wa-lcd: var(--wa-lcd);
+  --color-wa-lcd-deep: var(--wa-lcd-deep);
+  --color-wa-lcd-ink: var(--wa-lcd-ink);
+  --color-wa-lcd-dim: var(--wa-lcd-dim);
+  --color-wa-led: var(--wa-led);
+  --color-wa-bolt: var(--wa-bolt);
+  --color-wa-desk: var(--wa-desk);
+  --font-lcd: "VT323", ui-monospace, monospace;
+  --font-ui: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+}
+
+@utility wa-panel {
+  background: var(--wa-metal);
+  border: 1px solid var(--wa-chrome-edge);
+  border-radius: 6px;
+  box-shadow: var(--wa-bevel);
+}
+
+@utility wa-inset-panel {
+  background: linear-gradient(180deg, var(--wa-lcd-deep), var(--wa-lcd));
+  border: 1px solid var(--wa-chrome-edge);
+  border-radius: 4px;
+  box-shadow: var(--wa-inset);
+}
+
+@utility wa-pill {
+  background: var(--wa-metal);
+  border: 1px solid var(--wa-chrome-edge);
+  border-radius: 999px;
+  box-shadow: var(--wa-bevel);
+  color: oklch(0.28 0.03 258);
+}
+
+@utility wa-round {
+  background: var(--wa-knob);
+  border: 1px solid var(--wa-chrome-edge);
+  border-radius: 999px;
+  box-shadow: var(--wa-bevel);
+  color: oklch(0.28 0.03 258);
+}
+
+@utility wa-tab {
+  background: var(--wa-metal);
+  border: 1px solid var(--wa-chrome-edge);
+  box-shadow: var(--wa-bevel);
+  color: oklch(0.26 0.03 258);
+}
+
+@utility wa-marquee {
+  animation: wa-scroll 18s linear infinite;
+}
+
+@keyframes wa-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -141,4 +245,75 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+
+  input[type="range"].wa-slider {
+    appearance: none;
+    background: transparent;
+  }
+
+  input[type="range"].wa-slider::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--wa-groove);
+    box-shadow: var(--wa-inset);
+  }
+
+  input[type="range"].wa-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 26px;
+    height: 14px;
+    margin-top: -4px;
+    border-radius: 7px;
+    border: 1px solid var(--wa-chrome-edge);
+    background: var(--wa-metal);
+    box-shadow: var(--wa-bevel);
+  }
+
+  input[type="range"].wa-slider::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--wa-groove);
+  }
+
+  input[type="range"].wa-slider::-moz-range-thumb {
+    width: 24px;
+    height: 13px;
+    border-radius: 7px;
+    border: 1px solid var(--wa-chrome-edge);
+    background: var(--wa-chrome-hi);
+  }
+
+  input[type="range"].wa-slider-v {
+    appearance: none;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    width: 16px;
+    background: transparent;
+  }
+
+  input[type="range"].wa-slider-v::-webkit-slider-runnable-track {
+    width: 6px;
+    border-radius: 3px;
+    background: var(--wa-groove);
+    box-shadow: var(--wa-inset);
+  }
+
+  input[type="range"].wa-slider-v::-webkit-slider-thumb {
+    appearance: none;
+    height: 22px;
+    width: 14px;
+    border-radius: 4px;
+    border: 1px solid var(--wa-chrome-edge);
+    background: var(--wa-metal-v);
+    box-shadow: var(--wa-bevel);
+  }
+
+  input[type="range"].wa-slider-v::-moz-range-thumb {
+    height: 20px;
+    width: 13px;
+    border-radius: 4px;
+    border: 1px solid var(--wa-chrome-edge);
+    background: var(--wa-chrome-hi);
+  }
 }
+
