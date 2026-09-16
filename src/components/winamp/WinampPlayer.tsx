@@ -147,7 +147,6 @@ export default function WinampPlayer() {
     <div className="font-ui w-full max-w-[560px] select-none">
       <audio
         ref={audioRef}
-        crossOrigin="anonymous"
         onWaiting={() => setBuffering(true)}
         onPlaying={() => {
           setBuffering(false);
