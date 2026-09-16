@@ -184,6 +184,7 @@
   --color-wa-desk: var(--wa-desk);
   --font-lcd: "VT323", ui-monospace, monospace;
   --font-ui: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --breakpoint-xs: 24rem;
 }
 
 @utility wa-panel {

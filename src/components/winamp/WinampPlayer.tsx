@@ -289,7 +289,7 @@ export default function WinampPlayer() {
         </div>
 
         {/* transport */}
-        <div className="flex items-center gap-1.5 px-2 pb-2">
+        <div className="flex flex-wrap items-center gap-1.5 px-2 pb-2">
           <button onClick={() => step(-1)} className="wa-round h-9 w-9 text-[12px]" aria-label="Previous station">
             ◀◀
           </button>
