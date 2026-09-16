@@ -195,13 +195,13 @@ export default function WinampPlayer() {
 
         <div className="flex gap-1.5 px-1.5 pb-1.5">
           {/* LCD display */}
-          <div className="wa-inset-panel flex-1 p-2">
-            <div className="flex items-start gap-2">
+          <div className="wa-inset-panel min-w-0 flex-1 overflow-hidden p-2">
+            <div className="flex flex-wrap items-start gap-x-2 gap-y-1">
               <span className="mt-2 text-[10px] text-wa-lcd-ink">{playing ? "▶" : "❚❚"}</span>
-              <span className="font-lcd text-[42px] leading-[0.85] text-wa-lcd-ink">
+              <span className="font-lcd text-[34px] leading-[0.85] text-wa-lcd-ink sm:text-[42px]">
                 {formatTime(elapsed)}
               </span>
-              <div className="mt-1 flex flex-col gap-1 text-[9px] font-bold text-wa-lcd-ink">
+              <div className="mt-1 flex min-w-0 flex-col gap-1 text-[9px] font-bold text-wa-lcd-ink">
                 <div className="flex items-center gap-1">
                   <span>KBPS</span>
                   <span className="rounded-[2px] bg-wa-lcd-ink px-1 text-wa-lcd-deep">
@@ -218,7 +218,7 @@ export default function WinampPlayer() {
                 </div>
               </div>
               {/* analyzer */}
-              <div className="ml-auto flex h-[38px] items-end gap-[2px]">
+              <div className="ml-auto hidden h-[38px] items-end gap-[2px] xs:flex">
                 {bars.map((h, i) => (
                   <span
                     key={i}
@@ -230,17 +230,18 @@ export default function WinampPlayer() {
             </div>
 
             {/* scrolling title */}
-            <div className="mt-1.5 overflow-hidden border-t border-wa-lcd-ink/20 pt-1">
+            <div className="mt-1.5 w-full overflow-hidden border-t border-wa-lcd-ink/20 pt-1">
               <div className={`flex w-max gap-10 whitespace-nowrap ${playing ? "wa-marquee" : ""}`}>
-                <span className="font-lcd text-[26px] leading-tight tracking-wide text-wa-lcd-ink">
+                <span className="font-lcd text-[20px] leading-tight tracking-wide text-wa-lcd-ink sm:text-[26px]">
                   {failed ? "STREAM UNAVAILABLE — TRY ANOTHER STATION" : title}
                 </span>
-                <span className="font-lcd text-[26px] leading-tight tracking-wide text-wa-lcd-ink">
+                <span className="font-lcd text-[20px] leading-tight tracking-wide text-wa-lcd-ink sm:text-[26px]">
                   {failed ? "STREAM UNAVAILABLE — TRY ANOTHER STATION" : title}
                 </span>
               </div>
             </div>
           </div>
+
 
           {/* right rail */}
           <div className="flex w-[46px] flex-col items-center gap-1.5 pt-1">
