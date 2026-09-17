@@ -30,7 +30,7 @@ function Index() {
       style={{ background: "var(--wa-desk)" }}
     >
       <WinampPlayer />
-      <p className="font-ui text-[11px] text-wa-chrome-edge">
+      <p className="font-ui text-[11px] text-wa-ink">
         Live stations courtesy of the community-run radio-browser directory.
       </p>
     </main>

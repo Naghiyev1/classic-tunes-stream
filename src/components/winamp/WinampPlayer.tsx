@@ -9,6 +9,17 @@ import {
 
 const EQ_BANDS = ["60", "170", "310", "600", "1K", "3K", "6K", "12K", "14K", "16K"];
 
+const SKINS = [
+  { id: "mac", name: "MAC METAL", swatch: ["#dedfe3", "#3a3f57", "#8fa8ff"] },
+  { id: "classic", name: "CLASSIC GREEN", swatch: ["#3d4148", "#101a12", "#2ff45f"] },
+  { id: "amber", name: "AMBER GLOW", swatch: ["#4c433a", "#20180f", "#ffb545"] },
+  { id: "ice", name: "BLUE ICE", swatch: ["#e6eefb", "#2f5aa8", "#bfe4ff"] },
+  { id: "plum", name: "NEON PLUM", swatch: ["#4b3550", "#1e1024", "#ff6bd6"] },
+] as const;
+
+type SkinId = (typeof SKINS)[number]["id"];
+
+
 function formatTime(total: number) {
   const m = Math.floor(total / 60);
   const s = Math.floor(total % 60);
@@ -29,8 +40,20 @@ export default function WinampPlayer() {
   const [preamp, setPreamp] = useState(0);
   const [gains, setGains] = useState<number[]>(() => EQ_BANDS.map(() => 0));
   const [bars, setBars] = useState<number[]>(() => Array.from({ length: 19 }, () => 2));
-  const [panel, setPanel] = useState<"equalizer" | "playlist">("playlist");
+  const [panel, setPanel] = useState<"equalizer" | "playlist" | "themes">("playlist");
   const [filter, setFilter] = useState("");
+  const [skin, setSkin] = useState<SkinId>("mac");
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("wa-skin") as SkinId | null;
+    if (saved && SKINS.some((s) => s.id === saved)) setSkin(saved);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-skin", skin);
+    window.localStorage.setItem("wa-skin", skin);
+  }, [skin]);
+
 
   const countriesQuery = useQuery({ queryKey: ["radio-countries"], queryFn: fetchCountries });
   const stationsQuery = useQuery({
@@ -185,7 +208,7 @@ export default function WinampPlayer() {
         </div>
 
         {/* menu bar */}
-        <nav className="flex gap-4 px-3 py-1 text-[13px] font-semibold text-wa-chrome-edge">
+        <nav className="flex gap-4 px-3 py-1 text-[13px] font-semibold text-wa-ink">
           {["File", "Play", "Options", "View", "Help"].map((m) => (
             <span key={m} className="underline decoration-1 underline-offset-2">
               {m}
@@ -317,7 +340,7 @@ export default function WinampPlayer() {
               onChange={(e) => setVolume(Number(e.target.value))}
               aria-label="Volume"
             />
-            <span className="text-[10px] font-bold text-wa-chrome-edge">{volume}</span>
+            <span className="text-[10px] font-bold text-wa-ink">{volume}</span>
             <span className="text-wa-bolt text-[15px] leading-none">⚡</span>
           </div>
         </div>
@@ -355,7 +378,7 @@ export default function WinampPlayer() {
               >
                 PRESETS
               </button>
-              <p className="text-[10px] leading-snug text-wa-chrome-edge">
+              <p className="text-[10px] leading-snug text-wa-ink">
                 Visual EQ — live radio streams are broadcast pre-mastered.
               </p>
             </div>
@@ -373,7 +396,7 @@ export default function WinampPlayer() {
                   onChange={(e) => setPreamp(Number(e.target.value))}
                   aria-label="Preamp"
                 />
-                <span className="text-[9px] font-bold text-wa-chrome-edge">PRE</span>
+                <span className="text-[9px] font-bold text-wa-ink">PRE</span>
               </div>
               {EQ_BANDS.map((band, i) => (
                 <div key={band} className="flex flex-1 flex-col items-center gap-1">
@@ -388,12 +411,42 @@ export default function WinampPlayer() {
                     }
                     aria-label={`${band} Hz`}
                   />
-                  <span className="text-[9px] font-bold text-wa-chrome-edge">{band}</span>
+                  <span className="text-[9px] font-bold text-wa-ink">{band}</span>
                 </div>
               ))}
             </div>
           </div>
+        ) : panel === "themes" ? (
+          <div>
+            <p className="mb-2 text-[11px] font-bold tracking-wider text-wa-ink">
+              COLOR THEMES
+            </p>
+            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+              {SKINS.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setSkin(s.id)}
+                  aria-pressed={skin === s.id}
+                  className={`wa-pill flex items-center gap-2 px-2 py-1.5 text-[11px] font-bold tracking-wide ${
+                    skin === s.id ? "brightness-110" : "brightness-95"
+                  }`}
+                >
+                  <span className="flex shrink-0 overflow-hidden rounded-full border border-wa-chrome-edge">
+                    {s.swatch.map((c) => (
+                      <span key={c} className="h-4 w-2.5" style={{ background: c }} />
+                    ))}
+                  </span>
+                  <span className="truncate">{s.name}</span>
+                  {skin === s.id && <span className="ml-auto shrink-0">●</span>}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-[10px] leading-snug text-wa-ink">
+              Your skin is remembered on this device.
+            </p>
+          </div>
         ) : (
+
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <select
@@ -468,9 +521,15 @@ export default function WinampPlayer() {
           >
             PLAYLIST
           </button>
-          <span className="wa-tab rounded-t-md px-2 py-1 text-[11px] font-bold tracking-wider">
+          <button
+            onClick={() => setPanel("themes")}
+            className={`wa-tab flex-1 rounded-t-md px-2 py-1 text-[11px] font-bold tracking-wider ${
+              panel === "themes" ? "brightness-105" : "brightness-95"
+            }`}
+          >
             COLOR THEMES
-          </span>
+          </button>
+
         </div>
       </section>
     </div>

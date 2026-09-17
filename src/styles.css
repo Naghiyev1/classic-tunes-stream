@@ -147,6 +147,7 @@
   --wa-led: oklch(0.65 0.19 255);
   --wa-bolt: oklch(0.78 0.18 70);
   --wa-desk: oklch(0.9 0.006 250);
+  --wa-ink: oklch(0.28 0.03 258);
 
   --wa-metal: linear-gradient(
     180deg,
@@ -182,6 +183,7 @@
   --color-wa-led: var(--wa-led);
   --color-wa-bolt: var(--wa-bolt);
   --color-wa-desk: var(--wa-desk);
+  --color-wa-ink: var(--wa-ink);
   --font-lcd: "VT323", ui-monospace, monospace;
   --font-ui: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
   --breakpoint-xs: 24rem;
@@ -206,7 +208,7 @@
   border: 1px solid var(--wa-chrome-edge);
   border-radius: 999px;
   box-shadow: var(--wa-bevel);
-  color: oklch(0.28 0.03 258);
+  color: var(--wa-ink);
 }
 
 @utility wa-round {
@@ -214,14 +216,14 @@
   border: 1px solid var(--wa-chrome-edge);
   border-radius: 999px;
   box-shadow: var(--wa-bevel);
-  color: oklch(0.28 0.03 258);
+  color: var(--wa-ink);
 }
 
 @utility wa-tab {
   background: var(--wa-metal);
   border: 1px solid var(--wa-chrome-edge);
   box-shadow: var(--wa-bevel);
-  color: oklch(0.26 0.03 258);
+  color: var(--wa-ink);
 }
 
 @utility wa-marquee {
@@ -318,3 +320,72 @@
   }
 }
 
+
+/* ===== Skins (COLOR THEMES) ===== */
+[data-skin="classic"] {
+  --wa-ink: oklch(0.92 0.03 145);
+  --wa-chrome-hi: oklch(0.42 0.02 260);
+  --wa-chrome: oklch(0.33 0.02 260);
+  --wa-chrome-mid: oklch(0.28 0.02 260);
+  --wa-chrome-lo: oklch(0.22 0.015 260);
+  --wa-chrome-edge: oklch(0.16 0.01 260);
+  --wa-titlebar: oklch(0.24 0.03 265);
+  --wa-lcd: oklch(0.2 0.02 150);
+  --wa-lcd-deep: oklch(0.15 0.02 150);
+  --wa-lcd-ink: oklch(0.86 0.21 140);
+  --wa-lcd-dim: oklch(0.55 0.12 145);
+  --wa-led: oklch(0.8 0.21 140);
+  --wa-bolt: oklch(0.85 0.18 95);
+  --wa-desk: oklch(0.2 0.01 260);
+}
+
+[data-skin="amber"] {
+  --wa-ink: oklch(0.93 0.06 80);
+  --wa-chrome-hi: oklch(0.5 0.04 60);
+  --wa-chrome: oklch(0.4 0.04 55);
+  --wa-chrome-mid: oklch(0.34 0.035 55);
+  --wa-chrome-lo: oklch(0.27 0.03 50);
+  --wa-chrome-edge: oklch(0.18 0.02 50);
+  --wa-titlebar: oklch(0.3 0.06 55);
+  --wa-lcd: oklch(0.24 0.04 60);
+  --wa-lcd-deep: oklch(0.17 0.03 55);
+  --wa-lcd-ink: oklch(0.85 0.16 75);
+  --wa-lcd-dim: oklch(0.58 0.1 70);
+  --wa-led: oklch(0.8 0.18 70);
+  --wa-bolt: oklch(0.88 0.16 95);
+  --wa-desk: oklch(0.22 0.02 55);
+}
+
+[data-skin="ice"] {
+  --wa-ink: oklch(0.32 0.06 245);
+  --wa-chrome-hi: oklch(0.98 0.01 230);
+  --wa-chrome: oklch(0.9 0.03 230);
+  --wa-chrome-mid: oklch(0.84 0.04 230);
+  --wa-chrome-lo: oklch(0.7 0.06 235);
+  --wa-chrome-edge: oklch(0.5 0.08 245);
+  --wa-titlebar: oklch(0.45 0.11 245);
+  --wa-lcd: oklch(0.42 0.09 235);
+  --wa-lcd-deep: oklch(0.3 0.08 240);
+  --wa-lcd-ink: oklch(0.95 0.05 215);
+  --wa-lcd-dim: oklch(0.7 0.06 220);
+  --wa-led: oklch(0.75 0.15 220);
+  --wa-bolt: oklch(0.85 0.14 200);
+  --wa-desk: oklch(0.93 0.02 230);
+}
+
+[data-skin="plum"] {
+  --wa-ink: oklch(0.93 0.05 330);
+  --wa-chrome-hi: oklch(0.52 0.06 320);
+  --wa-chrome: oklch(0.41 0.07 320);
+  --wa-chrome-mid: oklch(0.35 0.07 318);
+  --wa-chrome-lo: oklch(0.28 0.06 315);
+  --wa-chrome-edge: oklch(0.19 0.04 315);
+  --wa-titlebar: oklch(0.3 0.09 320);
+  --wa-lcd: oklch(0.27 0.07 320);
+  --wa-lcd-deep: oklch(0.18 0.05 320);
+  --wa-lcd-ink: oklch(0.88 0.13 330);
+  --wa-lcd-dim: oklch(0.6 0.1 328);
+  --wa-led: oklch(0.75 0.2 330);
+  --wa-bolt: oklch(0.85 0.15 340);
+  --wa-desk: oklch(0.22 0.03 320);
+}
