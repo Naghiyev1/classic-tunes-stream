@@ -416,7 +416,37 @@ export default function WinampPlayer() {
               ))}
             </div>
           </div>
+        ) : panel === "themes" ? (
+          <div>
+            <p className="mb-2 text-[11px] font-bold tracking-wider text-wa-chrome-edge">
+              COLOR THEMES
+            </p>
+            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+              {SKINS.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setSkin(s.id)}
+                  aria-pressed={skin === s.id}
+                  className={`wa-pill flex items-center gap-2 px-2 py-1.5 text-[11px] font-bold tracking-wide ${
+                    skin === s.id ? "brightness-110" : "brightness-95"
+                  }`}
+                >
+                  <span className="flex shrink-0 overflow-hidden rounded-full border border-wa-chrome-edge">
+                    {s.swatch.map((c) => (
+                      <span key={c} className="h-4 w-2.5" style={{ background: c }} />
+                    ))}
+                  </span>
+                  <span className="truncate">{s.name}</span>
+                  {skin === s.id && <span className="ml-auto shrink-0">●</span>}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-[10px] leading-snug text-wa-chrome-edge">
+              Your skin is remembered on this device.
+            </p>
+          </div>
         ) : (
+
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <select
