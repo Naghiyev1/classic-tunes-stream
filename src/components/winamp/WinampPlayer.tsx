@@ -43,6 +43,9 @@ export default function WinampPlayer() {
   const [panel, setPanel] = useState<"equalizer" | "playlist" | "themes">("playlist");
   const [filter, setFilter] = useState("");
   const [skin, setSkin] = useState<SkinId>("mac");
+  const [playlistView, setPlaylistView] = useState<"all" | "favorites">("all");
+  const [favorites, setFavorites] = useState<RadioStation[]>([]);
+  const [favoritesReady, setFavoritesReady] = useState(false);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("wa-skin") as SkinId | null;
@@ -54,6 +57,35 @@ export default function WinampPlayer() {
     window.localStorage.setItem("wa-skin", skin);
   }, [skin]);
 
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem("wa-favorites") ?? "[]") as unknown;
+      if (Array.isArray(saved)) {
+        setFavorites(
+          saved.filter(
+            (station): station is RadioStation =>
+              typeof station === "object" &&
+              station !== null &&
+              "stationuuid" in station &&
+              typeof station.stationuuid === "string" &&
+              "name" in station &&
+              typeof station.name === "string" &&
+              "url_resolved" in station &&
+              typeof station.url_resolved === "string",
+          ),
+        );
+      }
+    } catch {
+      setFavorites([]);
+    }
+    setFavoritesReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!favoritesReady) return;
+    window.localStorage.setItem("wa-favorites", JSON.stringify(favorites));
+  }, [favorites, favoritesReady]);
+
 
   const countriesQuery = useQuery({ queryKey: ["radio-countries"], queryFn: fetchCountries });
   const stationsQuery = useQuery({
@@ -63,11 +95,27 @@ export default function WinampPlayer() {
   });
 
   const stations = stationsQuery.data ?? [];
+  const sourceStations = playlistView === "favorites" ? favorites : stations;
   const visible = useMemo(() => {
     const q = filter.trim().toLowerCase();
-    const list = q ? stations.filter((s) => s.name.toLowerCase().includes(q)) : stations;
+    const list = q
+      ? sourceStations.filter((s) => s.name.toLowerCase().includes(q))
+      : sourceStations;
     return list.slice(0, 120);
-  }, [stations, filter]);
+  }, [sourceStations, filter]);
+
+  const favoriteIds = useMemo(
+    () => new Set(favorites.map((station) => station.stationuuid)),
+    [favorites],
+  );
+
+  const toggleFavorite = useCallback((station: RadioStation) => {
+    setFavorites((saved) =>
+      saved.some((item) => item.stationuuid === station.stationuuid)
+        ? saved.filter((item) => item.stationuuid !== station.stationuuid)
+        : [...saved, station],
+    );
+  }, []);
 
   const play = useCallback((station: RadioStation) => {
     setCurrent(station);
@@ -448,22 +496,50 @@ export default function WinampPlayer() {
         ) : (
 
           <div>
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <select
-                value={country}
-                onChange={(e) => {
-                  setCountry(e.target.value);
-                  setFilter("");
-                }}
-                className="wa-pill max-w-[190px] flex-1 px-3 py-1 text-[12px] font-semibold"
-                aria-label="Country"
+            <div className="mb-1.5 flex items-center gap-1" aria-label="Playlist view">
+              <button
+                type="button"
+                onClick={() => setPlaylistView("all")}
+                aria-pressed={playlistView === "all"}
+                className={`wa-pill min-w-14 px-3 py-0.5 text-[10px] font-bold tracking-wide ${
+                  playlistView === "all" ? "brightness-110" : "brightness-95"
+                }`}
               >
-                {(countriesQuery.data ?? []).map((c) => (
-                  <option key={c.iso_3166_1} value={c.iso_3166_1}>
-                    {c.name} ({c.stationcount})
-                  </option>
-                ))}
-              </select>
+                ALL
+              </button>
+              <button
+                type="button"
+                onClick={() => setPlaylistView("favorites")}
+                aria-pressed={playlistView === "favorites"}
+                className={`wa-pill min-w-20 px-3 py-0.5 text-[10px] font-bold tracking-wide ${
+                  playlistView === "favorites" ? "brightness-110" : "brightness-95"
+                }`}
+              >
+                ★ FAV {favorites.length}
+              </button>
+            </div>
+            <div className="mb-2 flex flex-wrap items-center gap-2">
+              {playlistView === "all" ? (
+                <select
+                  value={country}
+                  onChange={(e) => {
+                    setCountry(e.target.value);
+                    setFilter("");
+                  }}
+                  className="wa-pill max-w-[190px] flex-1 px-3 py-1 text-[12px] font-semibold"
+                  aria-label="Country"
+                >
+                  {(countriesQuery.data ?? []).map((c) => (
+                    <option key={c.iso_3166_1} value={c.iso_3166_1}>
+                      {c.name} ({c.stationcount})
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <span className="wa-pill max-w-[190px] flex-1 px-3 py-1 text-center text-[11px] font-bold tracking-wide">
+                  SAVED STATIONS
+                </span>
+              )}
               <input
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
@@ -474,20 +550,29 @@ export default function WinampPlayer() {
             </div>
 
             <ul className="wa-inset-panel h-[210px] overflow-y-auto p-1.5 font-lcd text-[19px] leading-[1.35]">
-              {stationsQuery.isPending && <li className="text-wa-lcd-dim">LOADING STATIONS…</li>}
-              {stationsQuery.isError && (
+              {playlistView === "all" && stationsQuery.isPending && (
+                <li className="text-wa-lcd-dim">LOADING STATIONS…</li>
+              )}
+              {playlistView === "all" && stationsQuery.isError && (
                 <li className="text-wa-lcd-dim">DIRECTORY UNREACHABLE — RETRY LATER</li>
               )}
-              {!stationsQuery.isPending && visible.length === 0 && (
+              {playlistView === "all" && !stationsQuery.isPending && visible.length === 0 && (
                 <li className="text-wa-lcd-dim">NO SECURE STREAMS FOUND HERE</li>
+              )}
+              {playlistView === "favorites" && favoritesReady && favorites.length === 0 && (
+                <li className="text-wa-lcd-dim">NO FAVORITES YET — TAP ☆ TO SAVE ONE</li>
+              )}
+              {playlistView === "favorites" && favorites.length > 0 && visible.length === 0 && (
+                <li className="text-wa-lcd-dim">NO SAVED STATIONS MATCH</li>
               )}
               {visible.map((s, i) => {
                 const active = current?.stationuuid === s.stationuuid;
+                const favorite = favoriteIds.has(s.stationuuid);
                 return (
-                  <li key={s.stationuuid}>
+                  <li key={s.stationuuid} className="flex min-w-0 items-center">
                     <button
                       onClick={() => play(s)}
-                      className={`flex w-full items-baseline gap-2 truncate px-1 text-left ${
+                      className={`flex min-w-0 flex-1 items-baseline gap-2 truncate px-1 text-left ${
                         active
                           ? "bg-wa-lcd-ink/20 text-wa-lcd-ink"
                           : "text-wa-lcd-ink/85 hover:bg-wa-lcd-ink/10"
@@ -496,6 +581,18 @@ export default function WinampPlayer() {
                       <span className="w-6 shrink-0 text-wa-lcd-dim">{i + 1}.</span>
                       <span className="truncate">{s.name}</span>
                       <span className="ml-auto shrink-0 text-wa-lcd-dim">{s.bitrate}k</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleFavorite(s)}
+                      aria-label={favorite ? `Remove ${s.name} from favorites` : `Add ${s.name} to favorites`}
+                      aria-pressed={favorite}
+                      className={`grid h-6 w-7 shrink-0 place-items-center text-[17px] leading-none ${
+                        favorite ? "text-wa-lcd-ink" : "text-wa-lcd-dim hover:text-wa-lcd-ink"
+                      }`}
+                      title={favorite ? "Remove favorite" : "Add favorite"}
+                    >
+                      {favorite ? "★" : "☆"}
                     </button>
                   </li>
                 );
