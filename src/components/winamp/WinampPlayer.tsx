@@ -9,6 +9,17 @@ import {
 
 const EQ_BANDS = ["60", "170", "310", "600", "1K", "3K", "6K", "12K", "14K", "16K"];
 
+const SKINS = [
+  { id: "mac", name: "MAC METAL", swatch: ["#dedfe3", "#3a3f57", "#8fa8ff"] },
+  { id: "classic", name: "CLASSIC GREEN", swatch: ["#3d4148", "#101a12", "#2ff45f"] },
+  { id: "amber", name: "AMBER GLOW", swatch: ["#4c433a", "#20180f", "#ffb545"] },
+  { id: "ice", name: "BLUE ICE", swatch: ["#e6eefb", "#2f5aa8", "#bfe4ff"] },
+  { id: "plum", name: "NEON PLUM", swatch: ["#4b3550", "#1e1024", "#ff6bd6"] },
+] as const;
+
+type SkinId = (typeof SKINS)[number]["id"];
+
+
 function formatTime(total: number) {
   const m = Math.floor(total / 60);
   const s = Math.floor(total % 60);
