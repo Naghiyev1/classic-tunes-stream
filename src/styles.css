@@ -147,6 +147,7 @@
   --wa-led: oklch(0.65 0.19 255);
   --wa-bolt: oklch(0.78 0.18 70);
   --wa-desk: oklch(0.9 0.006 250);
+  --wa-ink: oklch(0.28 0.03 258);
 
   --wa-metal: linear-gradient(
     180deg,
@@ -182,6 +183,7 @@
   --color-wa-led: var(--wa-led);
   --color-wa-bolt: var(--wa-bolt);
   --color-wa-desk: var(--wa-desk);
+  --color-wa-ink: var(--wa-ink);
   --font-lcd: "VT323", ui-monospace, monospace;
   --font-ui: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
   --breakpoint-xs: 24rem;
@@ -206,7 +208,7 @@
   border: 1px solid var(--wa-chrome-edge);
   border-radius: 999px;
   box-shadow: var(--wa-bevel);
-  color: oklch(0.28 0.03 258);
+  color: var(--wa-ink);
 }
 
 @utility wa-round {
@@ -214,14 +216,14 @@
   border: 1px solid var(--wa-chrome-edge);
   border-radius: 999px;
   box-shadow: var(--wa-bevel);
-  color: oklch(0.28 0.03 258);
+  color: var(--wa-ink);
 }
 
 @utility wa-tab {
   background: var(--wa-metal);
   border: 1px solid var(--wa-chrome-edge);
   box-shadow: var(--wa-bevel);
-  color: oklch(0.26 0.03 258);
+  color: var(--wa-ink);
 }
 
 @utility wa-marquee {
@@ -321,6 +323,7 @@
 
 /* ===== Skins (COLOR THEMES) ===== */
 [data-skin="classic"] {
+  --wa-ink: oklch(0.92 0.03 145);
   --wa-chrome-hi: oklch(0.42 0.02 260);
   --wa-chrome: oklch(0.33 0.02 260);
   --wa-chrome-mid: oklch(0.28 0.02 260);
@@ -337,6 +340,7 @@
 }
 
 [data-skin="amber"] {
+  --wa-ink: oklch(0.93 0.06 80);
   --wa-chrome-hi: oklch(0.5 0.04 60);
   --wa-chrome: oklch(0.4 0.04 55);
   --wa-chrome-mid: oklch(0.34 0.035 55);
@@ -353,6 +357,7 @@
 }
 
 [data-skin="ice"] {
+  --wa-ink: oklch(0.32 0.06 245);
   --wa-chrome-hi: oklch(0.98 0.01 230);
   --wa-chrome: oklch(0.9 0.03 230);
   --wa-chrome-mid: oklch(0.84 0.04 230);
@@ -369,6 +374,7 @@
 }
 
 [data-skin="plum"] {
+  --wa-ink: oklch(0.93 0.05 330);
   --wa-chrome-hi: oklch(0.52 0.06 320);
   --wa-chrome: oklch(0.41 0.07 320);
   --wa-chrome-mid: oklch(0.35 0.07 318);

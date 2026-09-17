@@ -208,7 +208,7 @@ export default function WinampPlayer() {
         </div>
 
         {/* menu bar */}
-        <nav className="flex gap-4 px-3 py-1 text-[13px] font-semibold text-wa-chrome-edge">
+        <nav className="flex gap-4 px-3 py-1 text-[13px] font-semibold text-wa-ink">
           {["File", "Play", "Options", "View", "Help"].map((m) => (
             <span key={m} className="underline decoration-1 underline-offset-2">
               {m}
@@ -340,7 +340,7 @@ export default function WinampPlayer() {
               onChange={(e) => setVolume(Number(e.target.value))}
               aria-label="Volume"
             />
-            <span className="text-[10px] font-bold text-wa-chrome-edge">{volume}</span>
+            <span className="text-[10px] font-bold text-wa-ink">{volume}</span>
             <span className="text-wa-bolt text-[15px] leading-none">⚡</span>
           </div>
         </div>
@@ -378,7 +378,7 @@ export default function WinampPlayer() {
               >
                 PRESETS
               </button>
-              <p className="text-[10px] leading-snug text-wa-chrome-edge">
+              <p className="text-[10px] leading-snug text-wa-ink">
                 Visual EQ — live radio streams are broadcast pre-mastered.
               </p>
             </div>
@@ -396,7 +396,7 @@ export default function WinampPlayer() {
                   onChange={(e) => setPreamp(Number(e.target.value))}
                   aria-label="Preamp"
                 />
-                <span className="text-[9px] font-bold text-wa-chrome-edge">PRE</span>
+                <span className="text-[9px] font-bold text-wa-ink">PRE</span>
               </div>
               {EQ_BANDS.map((band, i) => (
                 <div key={band} className="flex flex-1 flex-col items-center gap-1">
@@ -411,14 +411,14 @@ export default function WinampPlayer() {
                     }
                     aria-label={`${band} Hz`}
                   />
-                  <span className="text-[9px] font-bold text-wa-chrome-edge">{band}</span>
+                  <span className="text-[9px] font-bold text-wa-ink">{band}</span>
                 </div>
               ))}
             </div>
           </div>
         ) : panel === "themes" ? (
           <div>
-            <p className="mb-2 text-[11px] font-bold tracking-wider text-wa-chrome-edge">
+            <p className="mb-2 text-[11px] font-bold tracking-wider text-wa-ink">
               COLOR THEMES
             </p>
             <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
@@ -441,7 +441,7 @@ export default function WinampPlayer() {
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-[10px] leading-snug text-wa-chrome-edge">
+            <p className="mt-2 text-[10px] leading-snug text-wa-ink">
               Your skin is remembered on this device.
             </p>
           </div>
