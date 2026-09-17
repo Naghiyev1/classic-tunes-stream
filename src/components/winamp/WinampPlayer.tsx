@@ -40,8 +40,20 @@ export default function WinampPlayer() {
   const [preamp, setPreamp] = useState(0);
   const [gains, setGains] = useState<number[]>(() => EQ_BANDS.map(() => 0));
   const [bars, setBars] = useState<number[]>(() => Array.from({ length: 19 }, () => 2));
-  const [panel, setPanel] = useState<"equalizer" | "playlist">("playlist");
+  const [panel, setPanel] = useState<"equalizer" | "playlist" | "themes">("playlist");
   const [filter, setFilter] = useState("");
+  const [skin, setSkin] = useState<SkinId>("mac");
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("wa-skin") as SkinId | null;
+    if (saved && SKINS.some((s) => s.id === saved)) setSkin(saved);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-skin", skin);
+    window.localStorage.setItem("wa-skin", skin);
+  }, [skin]);
+
 
   const countriesQuery = useQuery({ queryKey: ["radio-countries"], queryFn: fetchCountries });
   const stationsQuery = useQuery({
