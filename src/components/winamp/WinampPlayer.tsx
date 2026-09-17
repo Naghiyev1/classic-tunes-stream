@@ -521,9 +521,15 @@ export default function WinampPlayer() {
           >
             PLAYLIST
           </button>
-          <span className="wa-tab rounded-t-md px-2 py-1 text-[11px] font-bold tracking-wider">
+          <button
+            onClick={() => setPanel("themes")}
+            className={`wa-tab flex-1 rounded-t-md px-2 py-1 text-[11px] font-bold tracking-wider ${
+              panel === "themes" ? "brightness-105" : "brightness-95"
+            }`}
+          >
             COLOR THEMES
-          </span>
+          </button>
+
         </div>
       </section>
     </div>
