@@ -249,10 +249,18 @@
     color: var(--color-foreground);
   }
 
+  input[type="range"].wa-slider,
+  input[type="range"].wa-slider-v {
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
+  }
+
   input[type="range"].wa-slider {
     appearance: none;
     background: transparent;
   }
+
 
   input[type="range"].wa-slider::-webkit-slider-runnable-track {
     height: 6px;
