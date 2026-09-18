@@ -288,7 +288,7 @@ export default function WinampPlayer() {
         {/* menu bar */}
         <nav
           ref={menuBarRef}
-          className="relative z-20 flex justify-between px-2 py-1 text-[13px] font-semibold text-wa-ink sm:justify-start sm:gap-4 sm:px-3"
+          className="relative z-20 flex gap-2.5 px-2 py-1 text-[13px] font-semibold text-wa-ink sm:gap-4 sm:px-3"
           aria-label="Player menu"
         >
           <div className="relative">
