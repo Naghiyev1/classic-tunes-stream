@@ -18,6 +18,7 @@ const SKINS = [
 ] as const;
 
 type SkinId = (typeof SKINS)[number]["id"];
+type MenuId = "file" | "play" | "options" | "view" | "help";
 
 
 function formatTime(total: number) {
@@ -28,6 +29,7 @@ function formatTime(total: number) {
 
 export default function WinampPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const menuBarRef = useRef<HTMLElement | null>(null);
   const [country, setCountry] = useState("US");
   const [current, setCurrent] = useState<RadioStation | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -46,6 +48,7 @@ export default function WinampPlayer() {
   const [playlistView, setPlaylistView] = useState<"all" | "favorites">("all");
   const [favorites, setFavorites] = useState<RadioStation[]>([]);
   const [favoritesReady, setFavoritesReady] = useState(false);
+  const [openMenu, setOpenMenu] = useState<MenuId | null>(null);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("wa-skin") as SkinId | null;
@@ -181,6 +184,33 @@ export default function WinampPlayer() {
     setElapsed(0);
   }, []);
 
+  const resetEqualizer = useCallback(() => {
+    setGains(EQ_BANDS.map(() => 0));
+    setPreamp(0);
+    setBalance(50);
+  }, []);
+
+  const runMenuAction = useCallback((action: () => void) => {
+    action();
+    setOpenMenu(null);
+  }, []);
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Node && !menuBarRef.current?.contains(target)) setOpenMenu(null);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenMenu(null);
+    };
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) audio.volume = volume / 100;
@@ -256,12 +286,78 @@ export default function WinampPlayer() {
         </div>
 
         {/* menu bar */}
-        <nav className="flex gap-4 px-3 py-1 text-[13px] font-semibold text-wa-ink">
-          {["File", "Play", "Options", "View", "Help"].map((m) => (
-            <span key={m} className="underline decoration-1 underline-offset-2">
-              {m}
-            </span>
-          ))}
+        <nav
+          ref={menuBarRef}
+          className="relative z-20 flex justify-between px-2 py-1 text-[13px] font-semibold text-wa-ink sm:justify-start sm:gap-4 sm:px-3"
+          aria-label="Player menu"
+        >
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setOpenMenu((menu) => (menu === "file" ? null : "file"))}
+              aria-expanded={openMenu === "file"}
+              aria-haspopup="menu"
+              className={`px-1 underline decoration-1 underline-offset-2 ${openMenu === "file" ? "bg-wa-titlebar text-wa-chrome-hi" : ""}`}
+            >
+              File
+            </button>
+            {openMenu === "file" && (
+              <div role="menu" className="wa-panel absolute left-0 top-full mt-0.5 w-44 p-1 text-[12px] shadow-lg">
+                <button role="menuitem" type="button" onClick={() => runMenuAction(() => { setPanel("playlist"); setPlaylistView("all"); })} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">Open station list</button>
+                <button role="menuitem" type="button" onClick={() => runMenuAction(() => { setPanel("playlist"); setPlaylistView("favorites"); })} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">★ Open favourites</button>
+                <div className="my-1 border-t border-wa-chrome-edge/50" />
+                <button role="menuitem" type="button" onClick={() => runMenuAction(stop)} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">Close stream</button>
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <button type="button" onClick={() => setOpenMenu((menu) => (menu === "play" ? null : "play"))} aria-expanded={openMenu === "play"} aria-haspopup="menu" className={`px-1 underline decoration-1 underline-offset-2 ${openMenu === "play" ? "bg-wa-titlebar text-wa-chrome-hi" : ""}`}>Play</button>
+            {openMenu === "play" && (
+              <div role="menu" className="wa-panel absolute left-0 top-full mt-0.5 w-40 p-1 text-[12px] shadow-lg">
+                <button role="menuitem" type="button" onClick={() => runMenuAction(togglePlay)} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">{playing ? "❚❚ Pause" : "▶ Play"}</button>
+                <button role="menuitem" type="button" onClick={() => runMenuAction(stop)} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">■ Stop</button>
+                <div className="my-1 border-t border-wa-chrome-edge/50" />
+                <button role="menuitem" type="button" onClick={() => runMenuAction(() => step(-1))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">◀ Previous station</button>
+                <button role="menuitem" type="button" onClick={() => runMenuAction(() => step(1))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">▶ Next station</button>
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <button type="button" onClick={() => setOpenMenu((menu) => (menu === "options" ? null : "options"))} aria-expanded={openMenu === "options"} aria-haspopup="menu" className={`px-1 underline decoration-1 underline-offset-2 ${openMenu === "options" ? "bg-wa-titlebar text-wa-chrome-hi" : ""}`}>Options</button>
+            {openMenu === "options" && (
+              <div role="menu" className="wa-panel absolute left-0 top-full mt-0.5 w-40 p-1 text-[12px] shadow-lg">
+                <button role="menuitem" type="button" onClick={() => runMenuAction(() => setVolume((value) => Math.min(100, value + 10)))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">Volume up</button>
+                <button role="menuitem" type="button" onClick={() => runMenuAction(() => setVolume((value) => Math.max(0, value - 10)))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">Volume down</button>
+                <button role="menuitem" type="button" onClick={() => runMenuAction(() => setVolume(0))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">Mute</button>
+                <div className="my-1 border-t border-wa-chrome-edge/50" />
+                <button role="menuitem" type="button" onClick={() => runMenuAction(resetEqualizer)} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">Reset equalizer</button>
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <button type="button" onClick={() => setOpenMenu((menu) => (menu === "view" ? null : "view"))} aria-expanded={openMenu === "view"} aria-haspopup="menu" className={`px-1 underline decoration-1 underline-offset-2 ${openMenu === "view" ? "bg-wa-titlebar text-wa-chrome-hi" : ""}`}>View</button>
+            {openMenu === "view" && (
+              <div role="menu" className="wa-panel absolute right-0 top-full mt-0.5 w-40 p-1 text-[12px] shadow-lg sm:left-0 sm:right-auto">
+                <button role="menuitemradio" aria-checked={panel === "playlist"} type="button" onClick={() => runMenuAction(() => setPanel("playlist"))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">{panel === "playlist" ? "●" : "○"} Playlist</button>
+                <button role="menuitemradio" aria-checked={panel === "equalizer"} type="button" onClick={() => runMenuAction(() => setPanel("equalizer"))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">{panel === "equalizer" ? "●" : "○"} Equalizer</button>
+                <button role="menuitemradio" aria-checked={panel === "themes"} type="button" onClick={() => runMenuAction(() => setPanel("themes"))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">{panel === "themes" ? "●" : "○"} Color themes</button>
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <button type="button" onClick={() => setOpenMenu((menu) => (menu === "help" ? null : "help"))} aria-expanded={openMenu === "help"} aria-haspopup="menu" className={`px-1 underline decoration-1 underline-offset-2 ${openMenu === "help" ? "bg-wa-titlebar text-wa-chrome-hi" : ""}`}>Help</button>
+            {openMenu === "help" && (
+              <div role="menu" className="wa-panel absolute right-0 top-full mt-0.5 w-48 p-1 text-[12px] shadow-lg">
+                <button role="menuitem" type="button" onClick={() => runMenuAction(() => window.open("https://www.radio-browser.info/", "_blank", "noopener,noreferrer"))} className="block w-full px-2 py-1 text-left hover:bg-wa-titlebar hover:text-wa-chrome-hi">Radio directory ↗</button>
+                <div className="my-1 border-t border-wa-chrome-edge/50" />
+                <p className="px-2 py-1 text-[10px] font-normal leading-snug text-wa-ink">RETRO RADIO AMP<br />Free worldwide radio · no account</p>
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className="flex gap-1.5 px-1.5 pb-1.5">
@@ -418,10 +514,7 @@ export default function WinampPlayer() {
                 <button className="wa-pill px-3 py-1 text-[11px] font-bold">AUTO</button>
               </div>
               <button
-                onClick={() => {
-                  setGains(EQ_BANDS.map(() => 0));
-                  setPreamp(0);
-                }}
+                onClick={resetEqualizer}
                 className="wa-pill px-3 py-1 text-[11px] font-bold"
               >
                 PRESETS
