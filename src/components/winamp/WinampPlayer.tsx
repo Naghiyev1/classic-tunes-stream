@@ -477,7 +477,7 @@ export default function WinampPlayer() {
             <span className="wa-round grid h-6 w-6 place-items-center text-[10px]">🔊</span>
             <input
               type="range"
-              className="wa-slider h-6 flex-1"
+              className="wa-slider h-3.5 flex-1"
               min={0}
               max={100}
               value={volume}
